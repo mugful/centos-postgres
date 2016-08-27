@@ -1,0 +1,45 @@
+#!/bin/bash
+
+set -euxo pipefail
+
+function main() {
+    ensure_directory_permissions
+    postgresql_initdb_if_needed
+    run_postgres
+}
+
+function ensure_directory_permissions() {
+    chown -R postgres:postgres /var/lib/pgsql
+    chmod 0750                 /var/lib/pgsql
+}
+
+function postgresql_initdb_if_needed() {
+    PGDATA=/var/lib/pgsql/data
+    if [ ! -e "$PGDATA" ]; then
+        # use mv to make the init atomic and prevent postgresql from
+        # starting when initdb is still in progress
+        su - postgres -c "initdb -D $PGDATA.init"
+
+        # starting with connections locked down to unix socket only
+        cat > $PGDATA.init/pg_hba.conf <<EOF
+# TYPE  DATABASE        USER            ADDRESS                 METHOD
+
+# "local" is for Unix domain socket connections only
+local   all             all                                     ident
+
+# Example allow-all password-auth connections:
+# host    all             all             0.0.0.0/0               md5
+# host    all             all             ::0/0                   md5
+
+# Connections from PG_HBA_LINES env var:
+${PG_HBA_LINES:-}
+EOF
+        su - postgres -c "mv $PGDATA.init $PGDATA"
+    fi
+}
+
+function run_postgres() {
+    su - postgres -c "/usr/bin/postgres -D /var/lib/pgsql/data"
+}
+
+main
