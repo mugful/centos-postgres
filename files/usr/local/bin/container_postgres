@@ -39,7 +39,7 @@ EOF
 }
 
 function run_postgres() {
-    su - postgres -c "/usr/bin/postgres -D /var/lib/pgsql/data"
+    exec su - postgres -c "/usr/bin/postgres -D /var/lib/pgsql/data"
 }
 
 main
