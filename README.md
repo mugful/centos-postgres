@@ -40,7 +40,9 @@ By default the PostgreSQL instance is pretty much locked down,
 allowing `ident` authentication method only. If you want to loosen the
 restriction by adding additional lines into pg_hba.conf when the
 container first initializes the database, you can set the container's
-`PG_HBA_LINES` environment variable.
+`PG_HBA_LINES` environment variable. Note that this variable takes
+effect only when initializing the database from scratch. When starting
+the container on an existing data directory, it has no effect.
 
 To configure the Postgres instance further you can edit the config
 files and restart the container.
