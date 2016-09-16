@@ -35,6 +35,11 @@ local   all             all                                     ident
 ${PG_HBA_LINES:-}
 EOF
         su - postgres -c "mv $PGDATA.init $PGDATA"
+
+        # make sure we can connect to the database from other containers
+        cat >> $PGDATA.init/postgresql.conf <<EOF
+listen_addresses = '*'
+EOF
     fi
 }
 
