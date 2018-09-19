@@ -3,12 +3,18 @@ centos-postgres
 
 A PostgreSQL image built on top of CentOS 7.
 
-Build
------
+Pull
+----
 
-    git clone https://github.com/dockingbay/centos-owncloud
-    cd centos-owncloud
-    docker build --force-rm -t dockingbay/centos-postgres:latest .
+Either pull from Quay.io:
+
+    docker pull quay.io/mugful/centos-postgres:master
+
+Or build your own:
+
+    git clone https://github.com/mugful/centos-postgres
+    cd centos-postgres
+    docker build --force-rm -t mugful/centos-postgres:master .
 
 Run
 ---
@@ -21,7 +27,7 @@ Prepare a directory where you'll have your Postgres data:
         --name my_pgsql \
         -v /var/lib/my-pgsql:/var/lib/pgsql:z \
         -p 5432:5432 \
-        dockingbay/centos-postgres:latest
+        quay.io/mugful/centos-postgres:master
 
 Now you have a Postgres instance running with its data directory
 exported onto the host. You can run psql to login as `postgres` user
